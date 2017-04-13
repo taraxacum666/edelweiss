@@ -11,6 +11,7 @@ export default React.createClass({
       <form onSubmit={this.props.search} className="search">
         <input type="text" ref="search" placeholder="Искать!" />
         <button>Искать!</button>
+        <button>В карцере</button>
       </form>
     );
   }

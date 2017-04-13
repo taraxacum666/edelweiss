@@ -2,10 +2,9 @@ import * as types from '../actions/action-types';
 import _ from 'lodash';
 
 const initialState = {
+  userLockup: [],
   users: [],
-  userProfile: {
-    repos: []
-  }
+  userProfile: {}
 };
 
 const userReducer = function(state = initialState, action) {
@@ -24,6 +23,9 @@ const userReducer = function(state = initialState, action) {
     case types.USER_PROFILE_SUCCESS:
       return Object.assign({}, state, { userProfile: action.userProfile });
 
+    case types.USER_LOCKUP_SUCCESS:
+      console.log(action.userLockup);
+      return Object.assign({}, state, { userLockup: action.userLockup });
   }
 
   return state;

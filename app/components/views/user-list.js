@@ -14,6 +14,7 @@ export default function(props) {
               <Link to={'/users/' + user.id}>{user.name}</Link>
             </div>
             <div className="controls">
+              <button onClick={props.lockupUser.bind(null, user.id)} className="lockup">В карцер</button>
               <button onClick={props.deleteUser.bind(null, user.id)} className="delete">Выписать</button>
             </div>
           </div>

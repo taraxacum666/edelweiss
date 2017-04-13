@@ -1,6 +1,6 @@
 import axios from 'axios';
 import store from '../store';
-import { getUsersSuccess, deleteUserSuccess, userProfileSuccess } from '../actions/user-actions';
+import { getUsersSuccess, deleteUserSuccess, userProfileSuccess, UserLockupSuccess } from '../actions/user-actions';
 
 /**
  * Get all users
@@ -37,6 +37,22 @@ export function deleteUser(userId) {
             return response;
         });
 }
+
+
+/**
+ * Go lockup
+ */
+
+
+export function lockupUser(userId) {
+    return axios.get('http://localhost:3001/users/' + userId)
+        .then((response) => {
+            store.dispatch(UserLockupSuccess(response.data));
+            console.log(store.getState())
+            return response;
+        });
+}
+
 
 /**
  * getProfile() is much more complex because it has to make

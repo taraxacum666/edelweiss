@@ -9,8 +9,10 @@ const mapStateToProps = function(store) {
 
   if (searchType === 'users') {
     totalResults = store.userState.users.length;
-  } else if (searchType === 'widgets') {
-    totalResults = store.widgetState.widgets.length;
+  } else if (searchType === 'special') {
+    totalResults = store.specialState.special.length;
+  } else if (searchType === 'blog'){
+    totalResults = store.blogState.posts.length;
   }
 
   return {

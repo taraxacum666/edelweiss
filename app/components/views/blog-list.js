@@ -9,10 +9,10 @@ export default function(props) {
             {props.posts.map(blog => {
 
                 return (
-                    <div key={posts.id} className="data-list-item">
-                        <div className="details">{posts.name}
-                            <p>Группа препарата: {posts.title}</p>
-                            <p>Описание препарата: {posts.description}</p>
+                    <div key={blog.id} className="data-list-item">
+                        <div className="details">{blog.name}
+                            <p>Группа препарата: {blog.title}</p>
+                            <p>Описание препарата: {blog.description}</p>
                         </div>
                     </div>
 

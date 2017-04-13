@@ -18,7 +18,7 @@ const SearchFormContainer = React.createClass({
     if (this.props.searchType === 'users') {
       userApi.searchUsers(query);
     } else if (this.props.searchType === 'special') {
-      widgetApi.searchSpecial(query);
+      specialApi.searchSpecial(query);
     }
   },
 

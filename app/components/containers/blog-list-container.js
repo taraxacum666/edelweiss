@@ -3,18 +3,18 @@ import { connect } from 'react-redux';
 import BlogList from '../views/blog-list';
 import * as blogApi from '../../api/blog-api';
 import store from '../../store';
-import { getPostsList } from '../../actions/blog-actions';
+import { loadSearchLayout } from '../../actions/search-layout-actions';
 
 const BlogListContainer = React.createClass({
 
     componentDidMount: function() {
         blogApi.getPosts();
-        store.dispatch(getPostsList('posts', 'Научный дневник'));
+        store.dispatch(loadSearchLayout('blog', 'Научный дневник'));
     },
 
     render: function() {
         return (
-            <BlogList blog={this.props.posts}/>
+            <BlogList posts={this.props.posts}/>
         );
     }
 

@@ -22395,10 +22395,9 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	var initialState = {
+	  userLockup: [],
 	  users: [],
-	  userProfile: {
-	    repos: []
-	  }
+	  userProfile: {}
 	};
 	
 	var userReducer = function userReducer() {
@@ -22422,6 +22421,9 @@
 	    case types.USER_PROFILE_SUCCESS:
 	      return _extends({}, state, { userProfile: action.userProfile });
 	
+	    case types.USER_LOCKUP_SUCCESS:
+	      console.log(action.userLockup);
+	      return _extends({}, state, { userLockup: action.userLockup });
 	  }
 	
 	  return state;
@@ -22442,6 +22444,7 @@
 	var GET_USERS_SUCCESS = exports.GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
 	var DELETE_USER_SUCCESS = exports.DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 	var USER_PROFILE_SUCCESS = exports.USER_PROFILE_SUCCESS = 'USER_PROFILE_SUCCESS';
+	var USER_LOCKUP_SUCCESS = exports.USER_LOCKUP_SUCCESS = 'USER_LOCKUP_SUCCESS';
 	
 	// Special
 	var GET_SPECIAL_SUCCESS = exports.GET_SPECIAL_SUCCESS = 'GET_SPECIAL_SUCCESS';
@@ -44919,8 +44922,10 @@
 	
 	  if (searchType === 'users') {
 	    totalResults = store.userState.users.length;
-	  } else if (searchType === 'widgets') {
-	    totalResults = store.widgetState.widgets.length;
+	  } else if (searchType === 'special') {
+	    totalResults = store.specialState.special.length;
+	  } else if (searchType === 'blog') {
+	    totalResults = store.blogState.posts.length;
 	  }
 	
 	  return {
@@ -45048,6 +45053,7 @@
 	exports.getUsers = getUsers;
 	exports.searchUsers = searchUsers;
 	exports.deleteUser = deleteUser;
+	exports.lockupUser = lockupUser;
 	exports.getProfile = getProfile;
 	
 	var _axios = __webpack_require__(266);
@@ -45093,6 +45099,18 @@
 	function deleteUser(userId) {
 	    return _axios2.default.delete('http://localhost:3001/users/' + userId).then(function (response) {
 	        _store2.default.dispatch((0, _userActions.deleteUserSuccess)(userId));
+	        return response;
+	    });
+	}
+	
+	/**
+	 * Go lockup
+	 */
+	
+	function lockupUser(userId) {
+	    return _axios2.default.get('http://localhost:3001/users/' + userId).then(function (response) {
+	        _store2.default.dispatch((0, _userActions.UserLockupSuccess)(response.data));
+	        console.log(_store2.default.getState());
 	        return response;
 	    });
 	}
@@ -46245,6 +46263,7 @@
 	exports.getUsersSuccess = getUsersSuccess;
 	exports.deleteUserSuccess = deleteUserSuccess;
 	exports.userProfileSuccess = userProfileSuccess;
+	exports.UserLockupSuccess = UserLockupSuccess;
 	
 	var _actionTypes = __webpack_require__(199);
 	
@@ -46270,6 +46289,13 @@
 	  return {
 	    type: types.USER_PROFILE_SUCCESS,
 	    userProfile: userProfile
+	  };
+	}
+	
+	function UserLockupSuccess(userLockup) {
+	  return {
+	    type: types.USER_LOCKUP_SUCCESS,
+	    userLockup: userLockup
 	  };
 	}
 
@@ -46423,6 +46449,11 @@
 	        "button",
 	        null,
 	        "\u0418\u0441\u043A\u0430\u0442\u044C!"
+	      ),
+	      _react2.default.createElement(
+	        "button",
+	        null,
+	        "\u0412 \u043A\u0430\u0440\u0446\u0435\u0440\u0435"
 	      )
 	    );
 	  }
@@ -46512,7 +46543,7 @@
 	  },
 	
 	  render: function render() {
-	    return _react2.default.createElement(_userList2.default, { users: this.props.users, deleteUser: userApi.deleteUser });
+	    return _react2.default.createElement(_userList2.default, { users: this.props.users, deleteUser: userApi.deleteUser, lockupUser: userApi.lockupUser });
 	  }
 	
 	});
@@ -46556,6 +46587,11 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'controls' },
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: props.lockupUser.bind(null, user.id), className: 'lockup' },
+	            '\u0412 \u043A\u0430\u0440\u0446\u0435\u0440'
+	          ),
 	          _react2.default.createElement(
 	            'button',
 	            { onClick: props.deleteUser.bind(null, user.id), className: 'delete' },
@@ -46815,7 +46851,7 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _blogActions = __webpack_require__(298);
+	var _searchLayoutActions = __webpack_require__(286);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -46827,11 +46863,11 @@
 	
 	    componentDidMount: function componentDidMount() {
 	        blogApi.getPosts();
-	        _store2.default.dispatch((0, _blogActions.getPostsList)('posts', 'Научный дневник'));
+	        _store2.default.dispatch((0, _searchLayoutActions.loadSearchLayout)('blog', 'Научный дневник'));
 	    },
 	
 	    render: function render() {
-	        return _react2.default.createElement(_blogList2.default, { blog: this.props.posts });
+	        return _react2.default.createElement(_blogList2.default, { posts: this.props.posts });
 	    }
 	
 	});
@@ -46862,22 +46898,22 @@
 	
 	            return _react2.default.createElement(
 	                'div',
-	                { key: posts.id, className: 'data-list-item' },
+	                { key: blog.id, className: 'data-list-item' },
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'details' },
-	                    posts.name,
+	                    blog.name,
 	                    _react2.default.createElement(
 	                        'p',
 	                        null,
 	                        '\u0413\u0440\u0443\u043F\u043F\u0430 \u043F\u0440\u0435\u043F\u0430\u0440\u0430\u0442\u0430: ',
-	                        posts.title
+	                        blog.title
 	                    ),
 	                    _react2.default.createElement(
 	                        'p',
 	                        null,
 	                        '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u0435\u043F\u0430\u0440\u0430\u0442\u0430: ',
-	                        posts.description
+	                        blog.description
 	                    )
 	                )
 	            );

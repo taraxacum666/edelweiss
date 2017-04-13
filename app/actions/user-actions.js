@@ -20,3 +20,10 @@ export function userProfileSuccess(userProfile) {
     userProfile
   };
 }
+
+export function UserLockupSuccess(userLockup){
+  return {
+    type: types.USER_LOCKUP_SUCCESS,
+    userLockup
+  };
+}
